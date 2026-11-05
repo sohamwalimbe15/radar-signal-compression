@@ -1,0 +1,3 @@
+for the baseline model (architecture wise), here is the pipeline being followed usually:
+let's say we have input a complex number a + ib.
+for reconstruction, the model architecture will be you take a, pass it through conv, you take b, pass it through a different conv, concat these, then have an autoencoder, then seperate the two again into real and imaginary parts and calculate l2 loss for reconstruction.

@@ -1,0 +1,18 @@
+[project]
+name = "sarcomp"
+version = "0.1.0"
+description = "Modular complex-valued SAR autoencoders with flow-matching decoders"
+requires-python = ">=3.9"
+dependencies = ["torch>=2.0", "numpy", "pyyaml"]
+
+[project.optional-dependencies]
+data = ["rasterio"]
+dev = ["pytest"]
+sam = ["transformers"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["sarcomp*"]

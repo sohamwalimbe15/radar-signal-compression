@@ -1,0 +1,4 @@
+base: base.yaml
+name: exp1_baseline_ae
+stage: ae
+model: {arch: baseline}

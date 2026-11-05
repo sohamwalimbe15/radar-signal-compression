@@ -1,0 +1,5 @@
+base: base.yaml
+name: exp3_baseline_2_e1d2
+stage: e1d2                    # step 2: frozen E1; train D2 to reconstruct from the TRUE latent1
+ckpt: {ae: runs/exp1_baseline_ae/last.pt}
+stage_opts: {init_d2_from_ae: false}

@@ -1,0 +1,57 @@
+# Shared defaults. Experiment configs inherit with `base: base.yaml` and override only what differs.
+seed: 0
+run_root: runs
+data:
+  source: tif                  # tif | synthetic
+  data_dir: data               # folder containing the ICEYE .tif (or set tif_path)
+  tif_path: null
+  patch: 256
+  batch_size: 16
+  num_workers: 4
+  train_samples_per_epoch: 2000   # train = random crops; val/test = fixed grid
+  fractions: [0.6, 0.2, 0.2]      # train | val | test, left to right
+  stats_path: runs/amp_stats.json # cached log-amplitude scale (computed on TRAIN columns only)
+  pixel_spacing: {range: 0.323197, azimuth: 0.068595}   # metres/pixel (rows = range, cols = azimuth), from the GeoJSON
+model:                         # (only used by stage `ae`; later stages read it from the checkpoint)
+  arch: baseline               # baseline | complex
+  image_size: 256
+  e1_widths: [64, 128, 256, 512, 1024]   # one stride-2 stage each: 256 -> 8x8, latent1 = 8x8x1024 (REAL numbers)
+  e2_widths: [1024, 1024, 2048]          # 8 -> 4 -> 2 -> 1, latent2 = 1x1x2048
+  act: relu                    # relu | leaky_relu | silu | gelu
+  norm: none                   # none | group
+fm:
+  backbone: conv_film          # conv_film | dit
+  backbone_args: {hidden: 512, n_blocks: 6, emb: 512}   # dit: {hidden: 512, depth: 6, heads: 8, emb: 512}
+  t_sampling: uniform          # uniform | logit_normal
+  stats_batches: 50            # batches used to fit latent mean/std
+train:
+  lr: 1.0e-4
+  weight_decay: 0.0
+  max_steps: 20000
+  warmup_steps: 500
+  cosine: true
+  grad_clip: 1.0
+  amp: true                    # bf16 autocast (CUDA only)
+  loss: mse                    # mse | l1
+  log_every: 50
+  val_every: 500
+  val_batches: 50
+  ckpt_every: 1000
+  ema: 0.999                   # FM stage only
+sampling:                      # FM sampling (finetune stage / evaluation)
+  steps: 20
+  solver: euler                # euler | midpoint | heun
+  use_ema: true
+eval:
+  split: test
+  seed: 0
+  max_batches: null
+sam:                           # downstream evaluation (python scripts/evaluate.py --sam); amplitude only
+  backend: hf_sam              # hf_sam | toy | <your own, see sarcomp/sam/backends.py>
+  model: facebook/sam-vit-base # swap weights here: facebook/sam-vit-large | facebook/sam-vit-huge | local folder
+  mosaic_rows: 4               # tiles down (range); tiles across is chosen so the mosaic is ~square on the ground
+  mosaic_cols: auto            # auto = round(rows * range_spacing / azimuth_spacing) = 19
+  max_mosaics: 8               # mosaics evaluated, spread evenly over the split
+  prompt_grid: 8               # 8x8 = 64 point prompts per image
+  clip_percentiles: [2, 98]    # grey-level window taken from the ORIGINAL mosaic, applied to both
+  batch_tiles: 16

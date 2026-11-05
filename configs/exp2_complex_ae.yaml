@@ -1,0 +1,4 @@
+base: base.yaml
+name: exp2_complex_ae
+stage: ae
+model: {arch: complex}

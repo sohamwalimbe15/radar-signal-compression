@@ -1,0 +1,4 @@
+base: base.yaml
+name: exp3_baseline_1_fm
+stage: fm                      # step 1: frozen E1,E2 from the AE; train flow matching p(latent1 | latent2)
+ckpt: {ae: runs/exp1_baseline_ae/last.pt}

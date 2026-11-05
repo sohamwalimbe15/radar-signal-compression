@@ -1,0 +1,6 @@
+torch>=2.0
+numpy
+pyyaml
+rasterio     # only needed to read the real GeoTIFF; synthetic smoke tests work without it
+pytest       # optional, for tests/
+transformers  # optional, only for the SAM downstream evaluation (scripts/evaluate.py --sam)

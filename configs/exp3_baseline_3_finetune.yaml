@@ -1,0 +1,7 @@
+base: base.yaml
+name: exp3_baseline_3_finetune
+stage: finetune                # step 3: frozen E1,E2,FM; fine-tune D2 on FM-GENERATED latent1  (= final model)
+ckpt:
+  ae: runs/exp1_baseline_ae/last.pt
+  fm: runs/exp3_baseline_1_fm/last.pt
+  d2: runs/exp3_baseline_2_e1d2/last.pt
